@@ -50,14 +50,33 @@ class CapsuleFlat:
         return tf.Variable(initial, name=name)
 
 
+class MarginLoss:
+    def __init__(self, lam=0.5):
+        self.lam = lam  # 调节两种loss的参数
+
+    def __call__(self, v, y_label):
+        # y_label为one-hot编码的label，v为分类用的capsule
+        v = tf.sqrt(tf.reduce_sum(tf.square(v), axis=-1))
+        T = y
+        m = 0.1 + y * 0.8
+        loss = T * tf.square(tf.nn.relu(m-v)) + self.lam * (1.0-T) * tf.square(tf.nn.relu(v-m))
+        loss = tf.reduce_sum(loss, axis=-1)
+        loss = tf.reduce_mean(loss)
+        return loss
+
+
 if __name__ == '__main__':
     BATCH_SIZE = None
     u_capsule_num = 30  # capsule的数量
     u_capsule_dim = 40  # capsule的大小
     u = tf.placeholder(tf.float32, shape=[BATCH_SIZE, u_capsule_num, u_capsule_dim])  # u为输入的capsule集合
+    y = tf.placeholder(tf.float32, shape=[BATCH_SIZE, u_capsule_num])
 
-    v_capsule_num = 25
-    v_capsule_dim = 35
-    ROUTING_NUMBER = 3
-    capsule = CapsuleFlat(v_capsule_num, v_capsule_dim, ROUTING_NUMBER, name='lf')
-    v, W = capsule(u)
+    # v_capsule_num = 25
+    # v_capsule_dim = 35
+    # ROUTING_NUMBER = 3
+    # capsule = CapsuleFlat(v_capsule_num, v_capsule_dim, ROUTING_NUMBER, name='lf')
+    # v, W = capsule(u)
+
+    loss = MarginLoss()(u, y)
+    print(loss)
