@@ -1,5 +1,6 @@
 # mnist的capsule网络，有待继续完成
 import tensorflow as tf
+from capsule_functions import CapsuleFlat, MarginLoss
 
 
 # 权重变量获取工具
@@ -15,6 +16,14 @@ def bias_variable(shape):
 
 def conv2d(x, W, stride, padding='SAME'):
     return tf.nn.conv2d(x, W, strides=[1, stride, stride, 1], padding=padding)
+
+
+def fc(x, output_size, acf_function=tf.nn.relu):
+    input_szie = x.get_shape().as_list()[-1]
+    W = weight_variable([input_szie, output_size])
+    b = bias_variable([output_size])
+    y = acf_function(tf.matmul(x, W) + b)
+    return y
 
 
 # 输入部分
@@ -43,3 +52,25 @@ h_conv2 = tf.nn.relu(conv2d(h_conv1, W_conv2, stride_conv2, 'VALID') + b_conv2)
 h_conv2_shape = h_conv2.get_shape().as_list()
 h_conv2 = tf.reshape(h_conv2, shape=(-1, 6, 6, 32, 8))  # 根据文章的意思做出第一步的primary capsule，指标是最后的先变动，256变为32*8
 primary_capsule = tf.reshape(h_conv2, shape=(-1, 6*6*32, 8))  # 展平primary capsule
+
+# 随时函数的构造
+digit_capsule, _ = CapsuleFlat(10, 16, 3)(primary_capsule)
+y_onehot = tf.placeholder(tf.float32, shape=[BATCH_SIZE, 10])
+loss = MarginLoss()(digit_capsule, y_onehot)
+
+# 正则化损失函数的构造
+# 先用masking取出相关的capsule
+y_masking = tf.expand_dims(y_onehot, axis=-1)
+capsule_masking = tf.reduce_sum(digit_capsule * y_masking, axis=1)
+
+# fc1
+fc1 = fc(capsule_masking, 512)
+
+# fc2
+fc2 = fc(fc1, 1024)
+
+# fc3
+fc3 = fc(fc2, 784, tf.nn.sigmoid)
+
+# 正则化损失函数
+loss_reg = tf.reduce_mean(tf.reduce_sum(tf.square(fc3 - tf.reshape(image_input, shape=(-1, 784))), axis=-1))

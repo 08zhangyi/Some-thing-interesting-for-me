@@ -57,8 +57,8 @@ class MarginLoss:
     def __call__(self, v, y_label):
         # y_label为one-hot编码的label，v为分类用的capsule
         v = tf.sqrt(tf.reduce_sum(tf.square(v), axis=-1))
-        T = y
-        m = 0.1 + y * 0.8
+        T = y_label
+        m = 0.1 + y_label * 0.8
         loss = T * tf.square(tf.nn.relu(m-v)) + self.lam * (1.0-T) * tf.square(tf.nn.relu(v-m))
         loss = tf.reduce_sum(loss, axis=-1)
         loss = tf.reduce_mean(loss)
