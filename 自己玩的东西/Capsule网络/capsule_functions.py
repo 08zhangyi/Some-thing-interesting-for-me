@@ -3,6 +3,7 @@ import tensorflow as tf
 
 
 # 最普通的capsule层定义
+# routing方法来自论文"Ydnamic Rouing Between Capsules"
 class CapsuleFlat:
     def __init__(self, v_capsule_num, v_capsule_dim, ROUTING_NUMBER, mode='normal', name=None):
         # capsule的相关参数
