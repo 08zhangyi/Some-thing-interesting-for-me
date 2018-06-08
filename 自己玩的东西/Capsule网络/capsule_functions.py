@@ -41,7 +41,7 @@ class CapsuleFlat:
 
     def squashing(self, s):
         # s的结构为{b, x, y]，x为capsule个数，y为capsule大小
-        s_norm = tf.norm(s, axis=2)
+        s_norm = tf.norm(s, axis=-1)
         s_norm = tf.square(s_norm) / ((1 + tf.square(s_norm)) * s_norm)
         v = s * tf.expand_dims(s_norm, axis=2)
         return v
