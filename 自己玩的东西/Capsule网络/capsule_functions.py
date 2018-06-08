@@ -23,6 +23,7 @@ class CapsuleFlat:
         u_predict = tf.expand_dims(tf.expand_dims(u, axis=-1), axis=-1) * W
         u_predict = tf.reduce_sum(u_predict, axis=2)
         # 计算权重
+        # 需要修改
         b = tf.constant(0.0, shape=[u_capsule_num, self.v_capsule_num])  # b使用全0初始化
         for i in range(self.ROUTING_NUMBER):
             if self.mode == 'normal':  # mode参数决定不同的capsule分配方式
