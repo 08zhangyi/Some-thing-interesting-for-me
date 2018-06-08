@@ -14,31 +14,30 @@ class CapsuleFlat:
         self.name = name
 
     def __call__(self, u):
-        with tf.variable_scope(self.name):
-            # 获取输入的capsule结构
-            u_capsule_num = u.get_shape().as_list()[1]
-            u_capsule_dim = u.get_shape().as_list()[2]
-            # 定义预测用的权重值
-            W = self.get_weight([u_capsule_num, u_capsule_dim, self.v_capsule_num, self.v_capsule_dim], self.name)
-            # 权重的乘法，计算u的预测值
-            u_predict = tf.expand_dims(tf.expand_dims(u, axis=-1), axis=-1) * W
-            u_predict = tf.reduce_sum(u_predict, axis=2)
-            # 计算权重
-            b = tf.constant(0.0, shape=[u_capsule_num, self.v_capsule_num])  # b使用全0初始化
-            for i in range(self.ROUTING_NUMBER):
-                if self.mode == 'normal':  # mode参数决定不同的capsule分配方式
-                    c = tf.expand_dims(tf.nn.softmax(b), axis=-1)
-                elif self.mode == 'reversed':
-                    c = tf.expand_dims(tf.nn.softmax(b), axis=0)
-                else:
-                    c = tf.expand_dims(tf.nn.softmax(b), axis=-1)
-                s = tf.reduce_sum(u_predict * c, axis=1)
-                v = self.squashing(s)
-                # 更新权重的公式
-                v_expand = tf.expand_dims(v, axis=1)
-                a = tf.reduce_sum(v_expand * u_predict, axis=-1)
-                b = b + a
-            return v, W
+        # 获取输入的capsule结构
+        u_capsule_num = u.get_shape().as_list()[1]
+        u_capsule_dim = u.get_shape().as_list()[2]
+        # 定义预测用的权重值
+        W = self.get_weight([u_capsule_num, u_capsule_dim, self.v_capsule_num, self.v_capsule_dim], self.name)
+        # 权重的乘法，计算u的预测值
+        u_predict = tf.expand_dims(tf.expand_dims(u, axis=-1), axis=-1) * W
+        u_predict = tf.reduce_sum(u_predict, axis=2)
+        # 计算权重
+        b = tf.constant(0.0, shape=[u_capsule_num, self.v_capsule_num])  # b使用全0初始化
+        for i in range(self.ROUTING_NUMBER):
+            if self.mode == 'normal':  # mode参数决定不同的capsule分配方式
+                c = tf.expand_dims(tf.nn.softmax(b), axis=-1)
+            elif self.mode == 'reversed':
+                c = tf.expand_dims(tf.nn.softmax(b), axis=0)
+            else:
+                c = tf.expand_dims(tf.nn.softmax(b), axis=-1)
+            s = tf.reduce_sum(u_predict * c, axis=1)
+            v = self.squashing(s)
+            # 更新权重的公式
+            v_expand = tf.expand_dims(v, axis=1)
+            a = tf.reduce_sum(v_expand * u_predict, axis=-1)
+            b = b + a
+        return v, W
 
     def squashing(self, s):
         # s的结构为{b, x, y]，x为capsule个数，y为capsule大小
