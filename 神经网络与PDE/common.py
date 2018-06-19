@@ -43,7 +43,7 @@ def neural_net(x, neurons, is_training, name, mv_decay=0.9, dtype=tf.float32):
 
 def kolmogorov_train_and_test(xi, x_sde, phi, u_reference, neurons, lr_boundaries, lr_values, train_steps, mc_rounds, mc_freq, file_name, dtype=tf.float32):
     '''
-    :param xi:
+    :param xi: xi为均匀采样，在d维空间的[a, b]区间上
     :param x_sde:
     :param phi: 边界条件函数，用tensorflow函数表达
     :param u_reference: 真实的u值
@@ -97,6 +97,7 @@ def kolmogorov_train_and_test(xi, x_sde, phi, u_reference, neurons, lr_boundarie
     file_out.write('step, l1_err, l2_err, li_err, l1_rel, l2_rel, li_rel, learning_rate, time_train, time_mc\n')
 
     with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
         for step in range(train_steps):
             if step % mc_freq == 0:
                 t1_train = time.time()
