@@ -1,6 +1,6 @@
-import tensorflow as tf
-
-with tf.name_scope('123'):
-    with tf.name_scope(None):
-        c = tf.Variable(1, name='f')
-        print(c.name)
+import gym
+env = gym.make('CartPole-v0')
+env.reset()
+for _ in range(1000):
+    env.render()
+    env.step(env.action_space.sample())
