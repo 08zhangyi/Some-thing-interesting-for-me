@@ -1,6 +1,7 @@
 import numpy as np
 import torch as t
 import torch.nn.functional as F
+t.manual_seed(100)  # 手动设置种子，一比较结果
 
 
 class Net(t.nn.Module):
@@ -51,6 +52,7 @@ for i in range(TRAIN_STEP):
     # 设定优化器
     # 更新net中的参数
     optimizer.zero_grad()  # 每步训练前，对net中参数的梯度归零，以重新计算梯度
+    # optimizer.zero_grad()与net.zero_grad()一致，都是让net中的参数梯度归零
     loss.backward()
     optimizer.step()
     print('loss is: ', loss.detach().numpy())
