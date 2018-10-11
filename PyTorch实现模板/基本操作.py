@@ -11,6 +11,8 @@ print(x.dtype)  # Double对应t.float64或t.double，其他类型依此类推
 a[0, 0] = 2.3  # a与x共享内存
 b = x.numpy()  # 从Tensor到numpy数组
 b[0, 0] = 2.3  # b与x共享内存
+x.requires_grad_(True)  # 若x的requires_grad为True，则不能直接用numpy()获取x的值，需要用x.detach().numpy()
+b = x.detach().numpy()  # detach方法将张量从计算图上分离，不能求导，但可以改变数值
 
 # Tensor中值的修改
 x[0, 0] = 2.5

@@ -90,8 +90,30 @@ class FullConnectedNetV5(t.nn.Module):
         return x
 
 
-# ParameterList，ParameterDict待开发
-pass
+# 全连接网络，用ParameterList定义
+class FullConnectedNetV6(t.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.params = t.nn.ParameterList([t.nn.Parameter(t.randn(256, 128)), t.nn.Parameter(t.randn(128, 16)), t.nn.Parameter(t.randn(16, 3))])
+
+    def forward(self, x):
+        x = t.mm(x, self.params[0])
+        x = t.mm(x, self.params[1])
+        x = t.mm(x, self.params[2])
+        return x
+
+
+# 全连接网络，用ParameterDict定义，比较新的PyTorch才有的功能
+class FullConnectedNetV7(t.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.params = t.nn.ParameterDict({'fc1': t.nn.Parameter(t.randn(256, 128)), 'fc2': t.nn.Parameter(t.randn(128, 16)), 'fc3': t.nn.Parameter(t.randn(16, 3))})
+
+    def forward(self, x):
+        x = t.mm(x, self.params['fc1'])
+        x = t.mm(x, self.params['fc2'])
+        x = t.mm(x, self.params['fc3'])
+        return x
 
 
 # 获取Module中信息的函数
@@ -103,7 +125,7 @@ def print_module_information(net):
         print(x)
     for name, parameter in net.named_parameters():
         print(name)  # name为__init__()中定义的变量
-net = FullConnectedNetV2()
+net = FullConnectedNetV6()
 print_module_information(net)
 
 
@@ -122,7 +144,8 @@ def get_sequential_model():
 
 
 if __name__ == '__main__':
-    net = FullConnectedNetV4()
+    print('---------------------------------------------')
+    net = FullConnectedNetV6()
     input = t.randn(18, 256)
     out = net(input)
     print(out.size())
