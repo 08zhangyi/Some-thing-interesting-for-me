@@ -28,6 +28,8 @@ class FullConnectedNetV2(t.nn.Module):
         # 调用init模块赋值
         init.xavier_normal_(self.fc1.weight)
         init.constant_(self.fc1.bias, 0.0)
+        # init.xavier_normal(self.fc1.weight)  # 过时版本，新版本加下划线_
+        # init.constant(self.fc1.bias, 0.0)
         # 赋值给指定值
         self.fc1.bias.data = t.tensor(np.ones((128, )), dtype=t.float32)  # dtype需要匹配
         # self.fc1.bias.data = t.tensor(np.zeros((128, )), dtype=t.float64)
@@ -116,6 +118,20 @@ class FullConnectedNetV7(t.nn.Module):
         return x
 
 
+# 全连接网络，手动从List中添加每层
+class FullConnectedNetV8(t.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.layers = [t.nn.Linear(256, 128), t.nn.Linear(128, 16), t.nn.Linear(16, 3)]
+        for i, fc in enumerate(self.layers):
+            setattr(self, 'fc'+str(i), fc)  # 一定要设置Net的属性，Module才能自动识别这些层
+
+    def forward(self, x):
+        for i, fc in enumerate(self.layers):
+            x = fc(x)
+        return x
+
+
 # 获取Module中信息的函数
 def print_module_information(net):
     for parameter in net.parameters():
@@ -145,7 +161,8 @@ def get_sequential_model():
 
 if __name__ == '__main__':
     print('---------------------------------------------')
-    net = FullConnectedNetV6()
+    net = FullConnectedNetV8()
+    # print(net)
     input = t.randn(18, 256)
     out = net(input)
     print(out.size())

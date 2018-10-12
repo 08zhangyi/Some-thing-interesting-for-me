@@ -37,7 +37,7 @@ net = Net()  # 不断的调用net，就可以使用固定的模型并对其优�
 print(net)
 # 设定损失函数和优化器
 LEARNING_RATE = 0.02
-criterion = t.nn.MSELoss()
+criterion = [t.nn.MSELoss(), t.nn.L1Loss()]
 optimizer = t.optim.SGD(net.parameters(), lr=LEARNING_RATE)
 
 TRAIN_STEP = 100  # 训练的步数
@@ -47,12 +47,38 @@ for i in range(TRAIN_STEP):
     input = t.Tensor(A[i % 2])  # 输入数据Tensor化
     output = net(input)
     target = t.Tensor(B[i % 2])  # 目标数据Tensor化
-    # 设定损失函数
-    loss = criterion(output, target)
+    # 设定损失函数，每次调用不同的损失函数做优化
+    loss = criterion[i % 2](output, target)
     # 设定优化器
     # 更新net中的参数
     optimizer.zero_grad()  # 每步训练前，对net中参数的梯度归零，以重新计算梯度
     # optimizer.zero_grad()与net.zero_grad()一致，都是让net中的参数梯度归零
-    loss.backward()
+    loss.backward()  # optimizer不管是用什么损失函数计算的梯度，optimizer只要用的这个梯度就可以
     optimizer.step()
     print('loss is: ', loss.detach().numpy())
+
+print('-------------------')
+print('save and load')
+print('-------------------')
+# 计算最后一次网络更新后的损失值
+input = t.Tensor(A[1])
+output = net(input)
+target = t.Tensor(B[1])
+loss = criterion[1](output, target)
+print('before saving loss is:', loss.detach().numpy())
+# 保存和加载整个模型，经过验证，两者数值相同，net确实被保存下来
+t.save(net, 'data\\model\\net.pkl')
+net = t.load('data\\model\\net.pkl')
+input = t.Tensor(A[1])
+output = net(input)
+target = t.Tensor(B[1])
+loss = criterion[1](output, target)
+print('after saving loss is (all model): ', loss.detach().numpy())
+# 仅保存和加载模型参数，经过验证，两者数值相同，net确实被保存下来
+t.save(net.state_dict(), 'data\\model\\net_params.pkl')
+net.load_state_dict(t.load('data\\model\\net_params.pkl'))
+input = t.Tensor(A[1])
+output = net(input)
+target = t.Tensor(B[1])
+loss = criterion[1](output, target)
+print('after saving loss is (only params): ', loss.detach().numpy())
