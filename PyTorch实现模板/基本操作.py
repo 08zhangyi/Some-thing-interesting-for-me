@@ -10,6 +10,8 @@ x = t.from_numpy(a)  # 从numpy数组到Tensor，第二种方法，生成的为D
 print(x.dtype)  # Double对应t.float64或t.double，其他类型依此类推
 a[0, 0] = 2.3  # a与x共享内存
 b = x.numpy()  # 从Tensor到numpy数组
+# b = x.tolist()  # 从Tensor到List
+# x.numel()  # 打印Tensor中元素个数
 b[0, 0] = 2.3  # b与x共享内存
 x.requires_grad_(True)  # 若x的requires_grad为True，则不能直接用numpy()获取x的值，需要用x.detach().numpy()
 b = x.detach().numpy()  # detach方法将张量从计算图上分离，不能求导，但可以改变数值
@@ -22,12 +24,15 @@ x[0:2, 0:2] = t.tensor(np.ones((2, 2)))  # 一组值的修改必须用Tensor包�
 x = t.rand(5, 3)
 # 查看元素大小
 x.size()
+x.shape
 # 内置生成函数
 x = t.rand(5, 3)
 x = t.randn(5, 3)
 x = t.randperm(5)
 x = t.ones(5, 3)
 x = t.zeros(5, 3)
+x = t.arange(1, 6, 2)
+x = t.linspace(1, 10, 3)
 a = t.tensor(np.ones((5, 3)) * 0.5)
 x = t.bernoulli(a)  # 伯努利分布的采样
 print(x)
@@ -38,6 +43,27 @@ y = t.rand(5, 3, 4)
 z = x + y
 z = t.Tensor(5, 3, 4)
 z = t.add(x, y, out=z)  # 指定赋值给z
+print(z.size())
+z = z.unsqueeze(2)  # 增加一个维度的操作
+print(z.size())
+z = z.squeeze(2)  # 减少一个维度的操作，z.squeeze()为挤出所有的维度
+print(z.size())
+z_size = z.size()
+z = z.view(z_size[2], 1, 1, z_size[1], 1, z_size[0])  # 改变Tensor的形状
+print(z.size())
+z = z.resize_(5, 4, 1)  # 小了舍弃，大了填充数据，resize_的效果
+print(z.size())
+z.type(t.float64)  # 更改Tensor的类型
+print(t.clamp(z, -0.1, 0.5))  # 上下截断
+
+# Tensor选择函数
+x = t.randn(3, 4)
+print(x[0])
+print(x[:, 1])
+print(x[2, 3])
+print(x > 1)
+print(x[x > 1])  # 按照x>1的位置选出数值，不共享内存
+print(x.masked_select(x > 1))  # 与上一行一致
 
 y.add(x)  # y不改变
 y.add_(x)  # y改变，原位加法
