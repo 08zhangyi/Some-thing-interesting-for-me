@@ -1,0 +1,2 @@
+Edward现在已经被tensorflow_probability中的Edward2所取代，tensorflow_probability功能更加强大
+但是Edward很好用，支持tensorflow1.6.0以及以下的版本
