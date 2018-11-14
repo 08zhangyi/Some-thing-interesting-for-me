@@ -44,14 +44,18 @@ UNITS = [23, 7, 2]
 SHAPE = 0.1
 x, w2, w1, w0, z2, z1, z0 = deep_exponential_family(DATA_SIZE, FEATURE_SIZE, UNITS, SHAPE)
 num_samples, qw2, qw1, qw0, qz2, qz1, qz0 = deep_exponential_family_variational(DATA_SIZE, FEATURE_SIZE, UNITS)
-log_joint = ed.make_log_joint_fn(deep_exponential_family)  # 对model进行包装，生成其对应的log参数
-
 x_sample = tf.placeholder(tf.float32, shape=[DATA_SIZE, FEATURE_SIZE])
+# 计算MCMC采样参数
+log_joint = ed.make_log_joint_fn(deep_exponential_family)  # 对model进行包装，生成其对应的log参数
 def target_log_prob_fn(w2, w1, w0, z2, z1, z0):  # 用此包装后，可以做到后验分布的概率
+    # 就是依赖于w2, w1, w0, z2, z1, z0与x的输入的对数似然函数，可以自定义
     return log_joint(DATA_SIZE, FEATURE_SIZE, UNITS, SHAPE, w2=w2, w1=w1, w0=w0, z2=z2, z1=z1, z0=z0, x=x_sample)
-hmc_kernel = tfp.mcmc.HamiltonianMonteCarlo(target_log_prob_fn=target_log_prob_fn, step_size=0.01, num_leapfrog_steps=5)
 BURNING_STEPS = 1000  # MCMC的燃烧次数
+hmc_kernel = tfp.mcmc.HamiltonianMonteCarlo(target_log_prob_fn=target_log_prob_fn, step_size=0.01, num_leapfrog_steps=5)
 states, kernels_results = tfp.mcmc.sample_chain(num_results=num_samples, current_state=[qw2, qw1, qw0, qz2, qz1, qz0], kernel=hmc_kernel, num_burnin_steps=BURNING_STEPS)
+# 其他的MCMC算法，部分也可适用
+# test_kernel = tfp.mcmc.MetropolisAdjustedLangevinAlgorithm(target_log_prob_fn, step_size=0.01)
+# states, kernels_results = tfp.mcmc.sample_chain(num_results=num_samples, current_state=[qw2, qw1, qw0, qz2, qz1, qz0], kernel=test_kernel, num_burnin_steps=BURNING_STEPS)
 # states为w2, w1, w0, z2, z1, z0的采样后验分布
 print(states)
 print(kernels_results)
