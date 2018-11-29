@@ -24,10 +24,26 @@ y = y.unsqueeze(1)
 z = x * y
 z = t.sum(z, 2)
 print(z.size())
-
+# 另外一种实现办法，加b的都是batch下的矩阵运算
+x = t.randn(batch_size, size_1, size_2)
+y = t.randn(batch_size, size_2, output_size)  # 计划x和y在第2和第1个维度想乘
+z = t.bmm(x, y)
+print(z.size())
 
 # 矩阵元素乘
 x = t.randn(3, 4, 5)
 y = t.randn(3, 4, 5)
 z = x * y
 print(z.size())
+
+# 矩阵行列式
+x = t.randn(3, 3)
+y = t.det(x)
+# y = t.logdet(x)
+print(y)
+
+# 矩阵逆
+y = t.inverse(x)  # x的逆
+y = t.matmul(x, y)
+print(y)
+
