@@ -3,6 +3,7 @@
 论文Matrix Capsules With EM Routing的层结构的实现
 '''
 import torch as t
+import numpy as np
 
 
 class DunamicRoutingCapsule(t.nn.Module):
@@ -43,7 +44,7 @@ class DunamicRoutingCapsule(t.nn.Module):
 
 
 class EMRoutingCapsule(t.nn.Module):
-    def __init__(self, ci_num, ci_dim, co_num, co_dim, routing_times=3):
+    def __init__(self, ci_num, ci_dim, co_num, co_dim, routing_times=1):
         # ci表示输入的capsule参数，co表示输出的capsule参数
         # routing_times表示EM routing的次数
         super().__init__()
@@ -59,7 +60,8 @@ class EMRoutingCapsule(t.nn.Module):
         # lambda_value是一个数值，逆温度参数
         u = u.unsqueeze(2).unsqueeze(3)
         uij = t.sum(u * self.W, dim=4)  # batch_size * ci_num * co_num * co_dim
-        self._EM_routing(uij, a)
+        M, ao = self._EM_routing(uij, a)
+        return M, ao
 
     def _EM_routing(self, uij, a):
         R = t.ones(uij.size()[0], uij.size()[1], uij.size()[2]) / uij.size()[2]
@@ -74,11 +76,16 @@ class EMRoutingCapsule(t.nn.Module):
             a_o = lambda_value * (self.beta_a - t.sum(cost, dim=2))
             a_o = self._logistics(a_o)
             # E步
-            p = t.randn(8, 3, 5)
+            p1 = (uij - miu_temp)**2
+            p2 = (2 * sigma**2).unsqueeze(1)
+            p3 = t.exp(-t.sum(p1 / p2, dim=3))
+            p4 = t.sqrt(t.sum(2 * np.pi * sigma**2, dim=2)).unsqueeze(1)
+            p = p3 / p4
             a_o_temp = a_o.unsqueeze(1)
             R = a_o_temp * p
             R_sum =  t.sum(R, dim=2).unsqueeze(2)
             R = R / R_sum
+        return miu, a_o
 
     def _logistics(self, x):
         x = 1 / (1 + t.exp(-x))
@@ -91,8 +98,8 @@ if __name__ == '__main__':
     ci_dim = 4
     co_num = 5
     co_dim = 6
-    lambda_value = 5
+    lambda_value = 3
     model = EMRoutingCapsule(ci_num, ci_dim, co_num, co_dim)
     u = t.randn(batch_size, ci_num, ci_dim)
     a = t.nn.functional.softmax(t.randn(batch_size, ci_num), dim=1)
-    model(u, a, lambda_value)
+    print(model(u, a, lambda_value))
