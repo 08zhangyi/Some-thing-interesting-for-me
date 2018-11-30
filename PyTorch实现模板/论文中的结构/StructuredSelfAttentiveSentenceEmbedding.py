@@ -1,11 +1,11 @@
+'''
+    论文A Structured Self-Attentive Sentence Embedding中网络结构的实现
+'''
 import torch as t
 import numpy as np
 
 
 class StructuredSelfAttentiveSentenceEmbedding(t.nn.Module):
-    '''
-    论文A Structured Self-Attentive Sentence Embedding中网络结构的实现
-    '''
     def __init__(self, word_numbers, word_embedding_size, hidden_size, num_layers, s1_size, s2_size):
         super().__init__()
         # 层定义
