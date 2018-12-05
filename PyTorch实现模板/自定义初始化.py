@@ -32,6 +32,10 @@ class Layer_init_test1(t.nn.Module):
 
 
 model = Layer_init_test1()
+x = t.ones(1, 2)
+y = model(x)
+print(y)
+print('----------------')
 
 
 # 通过共享外界的某个参数实现初始化
