@@ -3,6 +3,7 @@ import numpy as np
 
 # 生成Tensor
 x = t.Tensor(5, 3)
+x.numel()  # Tensor中元素个数
 x = t.tensor([3, 4, 5])
 a = np.random.rand(2, 3)
 x = t.tensor(a)  # 从numpy数组到Tensor，第一种方法
@@ -31,6 +32,7 @@ x = t.randn(5, 3)
 x = t.randperm(5)
 x = t.ones(5, 3)
 x = t.zeros(5, 3)
+x = t.eye(2, 3)
 x = t.arange(1, 6, 2)
 x = t.linspace(1, 10, 3)
 a = t.tensor(np.ones((5, 3)) * 0.5)
@@ -53,6 +55,10 @@ z = z.view(z_size[2], 1, 1, z_size[1], 1, z_size[0])  # 改变Tensor的形状
 print(z.size())
 z = z.resize_(5, 4, 1)  # 小了舍弃，大了填充数据，resize_的效果
 print(z.size())
+a = t.randn(1, 3, 2)
+b = t.randn(2, 3, 2)
+c = a.expand(2, 3, 2) + b  # 用expand扩张
+print(c)
 z.type(t.float64)  # 更改Tensor的类型
 print(t.clamp(z, -0.1, 0.5))  # 上下截断
 
@@ -74,3 +80,53 @@ x = t.rand(5, 4).cuda(t.device('cuda:1'))  # 指定CUDA设备
 x = t.rand(5, 4).cuda()
 fc = t.nn.Linear(4, 3).cuda()  # 模块中的参数会自动转移到CUDA中
 y = fc(x)
+
+# Tensor类型转换
+# t.set_default_tensor_type('torch.DoubleTensor')  # 设置默认类型的Tensor
+a = t.Tensor(2, 3)
+b = a.float()
+c = a.type_as(b)
+d = a.new(2, 3)  # 与构造新的Tensor等价，类型与a一致
+t.set_default_tensor_type('torch.FloatTensor')
+
+# 运算操作
+a - t.arange(0, 6).view(2, 3)
+b = t.cos(a)
+b = a % 3
+b = t.fmod(a, 3)  # 求模运算
+b = a ** 2
+b = t.pow(a, 2)
+b = t.clamp(a, min=3)  # 下界截取到3
+b = t.ones(2, 3)
+c = b.sum(dim=0, keepdim=True)  # 保留维数，不用squeeze处理
+c = b.sum(dim=0, keepdim=False)
+c = b.sum(dim=1)
+a = t.arange(0, 6).view(2, 3)
+c = a.cumsum(dim=1)
+a = t.linspace(0, 15, 6).view(2, 3)
+b = t.linspace(15, 0, 6).view(2, 3)
+c = a > b
+print(c)
+c = a[a>b]
+c = t.max(a)
+c = t.max(b, dim=1)
+c = t.max(a, b)
+
+# 对张量的结果进行连续化处理
+a = t.Tensor(2, 3)
+a.contiguous()
+
+# Tensor存储的结构
+a = t.arange(0, 6)
+print(a.storage())  # Tensor的存储空间，可以通过storage共享空间
+print(a.data_ptr())
+
+# 持久化
+a = t.Tensor(2, 3)
+t.save(a, 'data\\a.pth')  # 保存Tensor，其他对象类似
+b = t.load('data\\a.pth')  # 载入Tensor，其他对象类似
+linear_layer = t.nn.Linear(3, 4)
+t.save(linear_layer, 'data\\linear.pth')
+linear_layer1 = t.load('data\\linear.pth')
+print(linear_layer)
+print(linear_layer1)

@@ -47,3 +47,30 @@ y = t.inverse(x)  # x的逆
 y = t.matmul(x, y)
 print(y)
 
+# 矩阵求迹
+x = t.randn(3, 3)
+y = t.trace(x)
+print(y)
+
+# 矩阵对角元素
+x = t.randn(3, 3)
+y = t.diag(x)
+print(y)
+
+# 矩阵上下三角矩阵
+x = t.randn(5, 5)
+y = t.triu(x)  # 上三角
+y = t.tril(x)  # 下三角
+y = t.triu(x, diagonal=1)  # 偏移量参数
+print(y)
+
+# 矩阵转置
+x = t.randn(3, 4)
+y = x.t()
+y.contiguous()  # 转置后存储空间不连续化，进行连续化处理
+print(x)
+
+# 矩阵奇异值分解
+x = t.randn(5, 5)
+u, s, v = t.svd(x)
+print(u, s, v)
