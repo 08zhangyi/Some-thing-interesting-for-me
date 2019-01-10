@@ -45,7 +45,7 @@ class FullConnectedNetV2(t.nn.Module):
 
 
 # 全连接网络，BatchNorm层
-class FullConnectedNetV3(t.nn.Module):
+class FullConnectedNetV3_BN(t.nn.Module):
     def __init__(self):  # 参数在此处定义
         super().__init__()  # 必须先执行父类的初始化
         self.fc1 = t.nn.Linear(256, 128)
@@ -56,6 +56,25 @@ class FullConnectedNetV3(t.nn.Module):
     def forward(self, x):  # 激活函数在此处定义
         # x的形状应为(batch_size, data_size)
         x = self.fc1(x)
+        x = self.bn1(x)
+        x = t.nn.ReLU()(x)
+        x = t.nn.Sigmoid()(self.fc2(x))
+        x = self.fc3(x)
+        return x
+
+
+# 全连接网络，SpectralNorm层
+class FullConnectedNetV3_SN(t.nn.Module):
+    def __init__(self):  # 参数在此处定义
+        super().__init__()  # 必须先执行父类的初始化
+        self.fc1 = t.nn.Linear(256, 128)
+        self.fc2 = t.nn.Linear(128, 16)
+        self.fc3 = t.nn.Linear(16, 3)
+
+    def forward(self, x):  # 激活函数在此处定义
+        # x的形状应为(batch_size, data_size)
+        x = self.fc1(x)
+        x = t.nn.utils.spectral_norm(x)
         x = self.bn1(x)
         x = t.nn.ReLU()(x)
         x = t.nn.Sigmoid()(self.fc2(x))

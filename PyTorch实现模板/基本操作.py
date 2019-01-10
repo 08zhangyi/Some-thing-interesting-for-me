@@ -42,6 +42,8 @@ print(x)
 # Tensor操作
 x = t.rand(5, 3, 4)
 y = t.rand(5, 3, 4)
+z = t.cat([x, y], dim=1)  # 矩阵拼接
+print(z.size())
 z = x + y
 z = t.Tensor(5, 3, 4)
 z = t.add(x, y, out=z)  # 指定赋值给z

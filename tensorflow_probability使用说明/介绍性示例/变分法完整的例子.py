@@ -82,6 +82,9 @@ X_SAMPLE_VALUES = np.random.poisson(5., size=[DATA_SIZE, FEATURE_SIZE])
 TRAINING_STEPS = 1000
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
+    # 去暖用代码
+    while True:
+        _, elbo_values = sess.run([train_op, elbo], feed_dict={x_sample: X_SAMPLE_VALUES})
     for i in range(TRAINING_STEPS):
         _, elbo_values = sess.run([train_op, elbo], feed_dict={x_sample: X_SAMPLE_VALUES})
         print('第' + str(i+1) + '轮训练的似然变分下界估计为%.6f' % elbo_values)
