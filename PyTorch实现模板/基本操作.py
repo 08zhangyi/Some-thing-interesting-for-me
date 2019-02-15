@@ -92,7 +92,7 @@ d = a.new(2, 3)  # 与构造新的Tensor等价，类型与a一致
 t.set_default_tensor_type('torch.FloatTensor')
 
 # 运算操作
-a - t.arange(0, 6).view(2, 3)
+a - t.arange(0, 6).float().view(2, 3)
 b = t.cos(a)
 b = a % 3
 b = t.fmod(a, 3)  # 求模运算
