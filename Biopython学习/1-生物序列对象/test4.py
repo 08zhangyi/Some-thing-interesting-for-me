@@ -35,14 +35,20 @@ AlignIO.write(my_alignments, "data\\my_example.phy", "phylip")
 # count = AlignIO.convert("data\\F05371_seed.sth", "stockholm", "data\\PF05371_seed.aln", "clustal")
 
 # ClustalW多序列比较工具，需要单独安装，详见文档分析，旧
-from Bio.Align.Applications import ClustalwCommandline
-cline = ClustalwCommandline("clustalw2", infile="data\\opuntia.fasta")
+from Bio.Align.Applications import ClustalwCommandline, ClustalOmegaCommandline
+# cline = ClustalwCommandline("clustalw2", infile="data\\opuntia.fasta")
+cline = ClustalOmegaCommandline('D:\\programs\\自己玩的东西\\Biopython学习\\1-生物序列对象\\data\\clustal-omega-1.2.2-win64\\clustalo.exe',
+                                infile="data\\opuntia.fasta",
+                                outfile='data\\test1.aln',
+                                guidetree_out='data\\test2.dnd',
+                                force=True)
+cline()
 print(cline)
 
 # MUSCLE序列比较工具，需要单独安装，详见文档分析，新
 # 安装地址http://www.drive5.com/muscle/downloads.htm
 from Bio.Align.Applications import MuscleCommandline
-cline = MuscleCommandline(input="opuntia.fasta", out="opuntia.txt")
+cline = MuscleCommandline('D:\\programs\\自己玩的东西\\Biopython学习\\1-生物序列对象\\data\\muscle.exe', input="opuntia.fasta", out="opuntia.txt")
 print(cline)
-cline = MuscleCommandline(input="opuntia.fasta", out="opuntia.aln", clwstrict=True)
+cline = MuscleCommandline('D:\\programs\\自己玩的东西\\Biopython学习\\1-生物序列对象\\data\\muscle.exe', input="opuntia.fasta", out="opuntia.aln", clwstrict=True)
 print(cline)
