@@ -1,4 +1,5 @@
 import torch.nn
+import torch.optim
 
 
 class Architecturel(torch.nn.Module):
@@ -30,3 +31,7 @@ class Architecture2(torch.nn.Module):
         out = self.relu(out)
         out = self.fc2(out)
         return out
+
+
+model = Architecturel(10, 20, 2)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-5)
