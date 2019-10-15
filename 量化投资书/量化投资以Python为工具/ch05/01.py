@@ -64,3 +64,35 @@ c == d
 True is 1
 id(True)
 id(1)
+
+a = 2
+b = [3, 4, 2]
+c = {2, 3, 4}
+d = (2, 3, 4)
+a in b
+a in c
+a in d
+'2' in b
+'2' in c
+'2' in d
+e = 'abc2'
+'2' not in e
+
+2 + 3 * 5
+6 >= 3 ** 5
+
+dir(__builtins__)
+sum([6, 2.0])
+pow(6, 2)
+divmod(6, 2)
+(6//2, 6%2)
+abs(-6)
+all([3>2, 6<9])
+all([2, 3, 5, 6, 7])
+any([2, 3, 5, 6, 7])
+any([])
+max(6, 9)
+max([2, 3, 5, 6, 7])
+min(6, 9)
+min([2, 3, 5, 6, 7])
+round(3.84, 1)
