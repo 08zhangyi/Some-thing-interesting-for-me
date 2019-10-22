@@ -126,3 +126,78 @@ st2.capitalize()
 st2[0:4].capitalize() + st2[4:]
 'stock stocK Stock Stock,stock'.count('stock')
 'stock stocK Stock Stock,stock'.lower().count('stock')
+
+SSEC1 = {'Date': '02-Mar-2015', 'Open': 3332.7, 'High': 3336.8, 'Low': 3298.7, 'Close': 3336.3}
+SSEC2 = dict({'Date': '02-Mar-2015', 'Open': 3332.7, 'High': 3336.8, 'Low': 3298.7, 'Close': 3336.3})
+SSEC3 = dict(Date='02-Mar-2015', Open=3332.7, High=3336.8, Low=3298.7, Close=3336.3)
+SSEC4 = dict([('Date', '02-Mar-2015'), ('Open', 3332.7), ('High', 3336.8), ('Low', 3298.7), ('Close', 3336.3)])
+SSEC5 = dict(zip(['Data', 'Open', 'High', 'Low', 'Close'], ['02-Mar-2015', 3332.7, 3336.8, 3298.7, 3336.3]))
+SSEC1 == SSEC2 == SSEC3 == SSEC4 == SSEC5
+SSEC1.items()
+SSEC1.keys()
+SSEC1.values()
+SSEC_keys = SSEC1.keys()
+type(SSEC_keys)
+SSEC_keysList = list(SSEC_keys)
+SSEC_keysList
+SSEC_keysList[2]
+for v in SSEC1.values():
+    if type(v) == float:
+        v -= 20
+        print((v+20, v))
+    else:
+        print(v, type(v))
+SSEC1['Open']
+SSEC1.get('Open')
+for key in SSEC1.keys():
+    if type(SSEC1[key])==float:
+        SSEC1[key] += 100000
+    print(key, ':', SSEC1.get(key))
+SSEC1.update(Open=2332.7, High=2336.8, Low=2298.7, Close=2336.3)
+SSEC1
+SSEC1['index'] = '000001.SS'
+del SSEC1['Date']
+'Date' in SSEC1
+SSEC1
+SSEC2 = SSEC1.copy()
+SSEC2.clear()
+SSEC1
+SSEC2
+
+set1 = set([20, 50, 60, 34, 'python'])
+print(set1)
+list1 = [2, 3, 4, 5, 3, 2, 67]
+set2 = set(list1)
+print(set2)
+fset1 = frozenset([23, 56, 'python'])
+print(fset1)
+set3 = {'Open', 'Close', 'High', 'Low'}
+print(type(set3))
+set1.add('finance')
+print(set1)
+set1.remove(20)
+print(set1)
+# fset1.add(3)
+len(set3)
+len(fset1)
+list2 = [23.1, 24, 24.3, 22.9]
+d = dict()
+j = 0
+for i in set3:
+    d[i] = list2[j]
+    j += 1
+print(d)
+set1 = {20, 30, 5, 6, 7}
+set2 = {2, 3, 5, 7, 8}
+set1.union(set2), set1 | set2
+set1.intersection(set2), set1 & set2
+set1.difference(set2), set1 - set2
+set1.symmetric_difference(set2), set1 ^ set2
+{1, 2, 3} <= {1, 2, 3}
+{1, 2, 3} <= {1, 2, 3, 'python'}
+{1, 2, 3, 'python'}.issuperset({1, 2, 3})
+{5, 6, 7}.isdisjoint({})
+{5, 6, 7}.isdisjoint({5})
+{2, 3, 4, 7, 8, 9}.intersection({2, 3, 4, 6}).intersection({3, 4, 9})
+{2, 3, 4, 7, 8, 9} & {2, 3, 4, 6} & {3, 4, 9}
+{2, 3, 4, 7, 8, 9} - {2, 8} | {708, 100, 245}
