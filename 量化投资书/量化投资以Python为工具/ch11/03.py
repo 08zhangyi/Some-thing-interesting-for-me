@@ -37,3 +37,31 @@ df.ix[[1, 3], 2]
 df.ix[[1, 3], 'C']
 df.ix[1:3, 'A':'C']
 df.ix[1:3, df.iloc[3]>0]
+
+df.T
+df.sort_index(axis=0, ascending=False)
+df.sort_index(axis=1, ascending=False)
+df.sort_values(by=['C'])
+df
+df.rank(axis=0)
+df.rank(axis=1, ascending=False)
+s1 = pd.Series([1, 2, 3, 4, 5, 6], index=pd.date_range('20160102', periods=5))
+s1
+df['E'] = s1
+df
+df = df[list('ABCD')]
+pd.concat([df, s1], axis=1)
+df1 = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6], 'C': [7, 8, 9]}, index=pd.date_range('20160110', periods=3))
+df1
+df.append(df1)
+pd.concat([df, df1], join='inner')
+df.drop(dates[1:3])
+df.drop('A', axis=1)
+del df['A']
+df
+df.loc[dates[2], 'C'] = 0
+df.iloc[0, 4] = 0
+df.loc[:, 'B'] = np.arange(0, len(df))
+df
+new_index = pd.date_range('20160102', period=7)
+df.reindex(new_index, column=list('ABCD'))
