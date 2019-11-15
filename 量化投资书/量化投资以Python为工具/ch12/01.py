@@ -170,3 +170,5 @@ ax.plot(Open15, '-.>', label='最低价')
 ax.set_title('中国银行2015年价格图')
 ax.set_ylabel('价格')
 ax.legend(loc='best')
+
+plt.show()
