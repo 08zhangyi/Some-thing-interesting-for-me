@@ -54,4 +54,119 @@ plt.ylabel('价格')
 plt.title('中国银行2014年开盘与收盘价曲线')
 plt.grid(True, axis='both')
 
-plt.show()
+plt.plot(Close['2015'], marker='o', label='收盘价')
+plt.plot(Open['2015'], marker='*', label='开盘价')
+plt.legend(loc='best')
+plt.xlabel('日期')
+plt.ylabel('价格')
+plt.title('中国银行2015年开盘与收盘价曲线')
+plt.grid(True, axis='both')
+
+plt.plot(Close['2015'], marker='--rD', label='收盘价')
+plt.plot(Open['2015'], marker='--b>', label='开盘价')
+plt.legend(loc='best')
+plt.xlabel('日期')
+plt.ylabel('价格')
+plt.title('中国银行2015年开盘与收盘价曲线')
+plt.grid(True, axis='both')
+
+plt.plot(Close['2015'], marker='--rD', label='收盘价', linewidth=2)
+plt.plot(Open['2015'], marker='--b>', label='开盘价', lw=10)
+plt.legend(loc='best')
+plt.xlabel('日期')
+plt.ylabel('价格')
+plt.title('中国银行2015年开盘与收盘价曲线')
+plt.grid(True, axis='both')
+
+Close.describe()
+a = [0, 0, 0, 0]
+for i in Close:
+    if (i>2)&(i<=3):
+        a[0] += 1
+    elif (i>3)&(i<=4):
+        a[1] += 1
+    elif (i>4)&(i<=5):
+        a[2] += 1
+    else:
+        a[3] += 1
+print(a)
+plt.bar([2, 3, 4, 5], a)
+
+plt.bar([2, 3, 4, 5], height=a, width=1.0, bottom=2.0)
+plt.title('中国银行收盘价分布柱状图')
+
+plt.bar([2, 3, 4, 5], height=a, width=1.0, bottom=2.0, color='red', edgecolor='k')
+plt.title('中国银行收盘价分布柱状图')
+
+plt.bar([2, 3, 4, 5], a, height=1.0, color='red', edgecolor='k')
+plt.title('中国银行收盘价分布柱状图')
+
+plt.hist(Close, bins=12)
+plt.title('中国银行收盘价分布直方图')
+
+plt.hist(Close, range=(2.3, 5.5), orientation='horizontal', color='red', edgecolor='blue')
+plt.title('中国银行收盘价分布直方图')
+
+plt.hist(Close, range=(2.3, 5.5), orientation='vertical', cumulative=True, histtype='stepfilled', color='red', edgecolor='blue')
+plt.title('中国银行收盘价累积分布直方图')
+
+plt.pie(a, labels=('(2,3]', '(3,4]', '(4,5]', '(5,6]'), colors=('b', 'g', 'r', 'c'), shadow=True)
+plt.title('中国银行收盘价分布饼图')
+
+import numpy as np
+
+prcData = ChinaBank.iloc[:, :4]
+data = np.array(prcData)
+plt.boxplot(data, labels=('Open', 'High', 'Low', 'Close'))
+plt.title('中国银行股价箱形图')
+
+fig = plt.figure()
+ax1 = fig.add_axes([0.1, 0.1, 0.3, 0.3])
+ax2 = fig.add_axes([0.5, 0.5, 0.4, 0.4])
+ax1.plot(Close[:10])
+ax2.plot(Open[:10])
+ax1.set_title('前十个交易日收盘价')
+ax1.set_label('日期')
+ax1.set_xticklabels(Close.index[:10], rotation=25)
+ax1.set_ylabel('收盘价')
+ax1.set_ylim(2.4, 2.65)
+ax2.set_title('前十个交易日开盘价')
+ax2.set_label('日期')
+ax2.set_xticklabels(Close.index[:10], rotation=25)
+ax2.set_ylabel('开盘价')
+ax2.set_ylim(2.4, 2.65)
+
+ax1 = plt.subplot(221)
+ax2 = plt.subplot(222)
+ax3 = plt.subplot(223)
+ax4 = plt.subplot(224)
+
+Close15 = Close['2015']
+ax1 = plt.subplot(211)
+ax1.plot(Close15, color='k')
+ax1.set_ylabel('收盘价')
+ax1.set_title('中国银行2015年收盘价曲线图')
+
+Volume15 = ChinaBank.Volume['2015']
+Open15 = Open['2015']
+ax2 = plt.subplot(212)
+left1 = Volume15.index[Close15>Open15]
+hight1 = Volume15[left1]
+ax2.bar(left1, hight1, color='r')
+left2 = Volume15.index[Close15<Open15]
+hight2 = Volume15[left2]
+ax2.bar(left2, hight2, color='g')
+ax2.set_ylabel('成交量')
+ax2.set_title('中国银行2015年成交量柱状图')
+
+High15 = ChinaBank.High['2015']
+Low15 = ChinaBank.Low['2015']
+fig = plt.figure()
+ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+ax.plot(Close15, label='收盘价')
+ax.plot(Open15, '--*', label='开盘价')
+ax.plot(High15, '-+', label='最高价')
+ax.plot(Open15, '-.>', label='最低价')
+ax.set_title('中国银行2015年价格图')
+ax.set_ylabel('价格')
+ax.legend(loc='best')
