@@ -28,3 +28,6 @@ print(norm.ppf(0.05, returnS.mean(), returnS.std()))
 print(norm.ppf(0.05, returnD.mean(), returnD.std()))
 print(returnS[returnS<=returnS.quantile(0.05)].mean())
 print(returnD[returnD<=returnD.quantile(0.05)].mean())
+
+print(ffn.calc_max_drawdown((1+returnS).cumprod()))
+print(ffn.calc_max_drawdown((1+returnD).cumprod()))
