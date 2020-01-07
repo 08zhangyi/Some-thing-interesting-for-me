@@ -1,5 +1,6 @@
 import pandas as pd
 import ffn
+from scipy.stats import norm
 
 SAPower = pd.read_csv('SAPower.csv', index_col='Date')
 SAPower.index = pd.to_datetime(SAPower.index)
@@ -20,3 +21,10 @@ def cal_half_dev(returns):
 
 print(cal_half_dev(returnS))
 print(cal_half_dev(returnD))
+
+print(returnS.quantile(0.05))
+print(returnD.quantile(0.05))
+print(norm.ppf(0.05, returnS.mean(), returnS.std()))
+print(norm.ppf(0.05, returnD.mean(), returnD.std()))
+print(returnS[returnS<=returnS.quantile(0.05)].mean())
+print(returnD[returnD<=returnD.quantile(0.05)].mean())
