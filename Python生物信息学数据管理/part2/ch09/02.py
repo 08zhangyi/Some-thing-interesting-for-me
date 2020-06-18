@@ -1,0 +1,10 @@
+pattern = '[DEQN]-x-[DEQN](2)-C-x(3,14)-C-x(3,7)-C-x-[DN]-x(4)-[FY]-x-C'
+pattern = pattern.replace('{', '[^')
+pattern = pattern.replace('}', ']')
+pattern = pattern.replace('(', '{')
+pattern = pattern.replace(')', '}')
+pattern = pattern.replace('-', '')
+pattern = pattern.replace('x', '.')
+pattern = pattern.replace('>', '$')
+pattern = pattern.replace('<', '^')
+print(pattern)
