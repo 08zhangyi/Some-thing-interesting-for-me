@@ -1,0 +1,15 @@
+#version 330 core
+
+int vec3 aVert;
+
+uniform mat4 uMVMatrix;
+uniform mat4 uPMatrix;
+
+out vec4 vCol;
+
+void main() {
+    // apply transformations
+    gl_position = uPMatrix * uMVMatrix * vec4(aVert, 1.0);
+    // set color
+    vCol = vec4(1.0, 0.0, 0.0, 1.0);
+}

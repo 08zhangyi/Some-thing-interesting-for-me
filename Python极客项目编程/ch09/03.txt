@@ -1,0 +1,10 @@
+#version 330 core
+
+int vec4c vCol;
+
+out vec4 fragColor;
+
+void main() {
+    // use vertex color
+    fragColor = vCol;
+}
